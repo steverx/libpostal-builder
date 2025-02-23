@@ -24,9 +24,9 @@ RUN mkdir -p /usr/local/data && \
     mkdir -p /usr/local/share/libpostal
 
 # Clone libpostal repository and build
-RUN git clone --depth 1 --branch v1.1.0 https://github.com/openvenues/libpostal && \
+RUN git clone https://github.com/openvenues/libpostal && \
     cd libpostal && \
-    ls -la data/ && \
+    git checkout tags/v1.0.0 && \
     ./bootstrap.sh && \
     ./configure --datadir=/usr/local/data \
                 --prefix=/usr/local \
