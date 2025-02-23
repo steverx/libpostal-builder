@@ -1,6 +1,6 @@
 FROM python:3.9-slim as builder
 
-# Install build dependencies
+# Install build dependencies with git configuration
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         gcc \
@@ -9,20 +9,24 @@ RUN apt-get update && \
         python3-dev \
         curl \
         git \
+        ca-certificates \
         autoconf \
         automake \
         libtool \
         pkg-config \
         build-essential \
         nginx \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && git config --global http.sslVerify false
 
 # Create directories
 RUN mkdir -p /usr/local/data && \
     mkdir -p /usr/local/share/libpostal
 
-# Clone libpostal repository with minimal depth
-RUN git clone --depth 1 --branch v1.1.0 https://github.com/openvenues/libpostal
+# Clone libpostal repository with retries
+RUN for i in 1 2 3; do \
+        git clone --depth 1 --branch v1.1.0 https://github.com/openvenues/libpostal && break || sleep 15; \
+    done
 
 # Copy data files from cloned repository
 RUN cp /libpostal/data/language_classifier.dat /usr/local/share/libpostal/ && \
