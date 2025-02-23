@@ -24,10 +24,12 @@ WORKDIR /usr/local/src
 # Clone libpostal repository
 RUN git clone https://github.com/openvenues/libpostal
 
-# --- Use WORKDIR consistently ---
 WORKDIR /usr/local/src/libpostal
 
 RUN git checkout tags/v1.0.0
+
+# Use TARGETPLATFORM for conditional compilation
+ARG TARGETPLATFORM
 
 # Build libpostal (Conditional CFLAGS within the RUN instruction)
 RUN ./bootstrap.sh && \
@@ -35,10 +37,10 @@ RUN ./bootstrap.sh && \
                 --prefix=/usr/local \
                 --disable-static \
                 --enable-shared && \
-    if [ "<span class="math-inline">\(uname \-m\)" \= "x86\_64" \]; then \\
-CFLAGS\="\-O2 \-fPIC \-mfpmath\=sse \-msse2 \-DUSE\_SSE" make \-j</span>(nproc); \
+    if [ "$TARGETPLATFORM" = "linux/amd64" ]; then \
+        make -j$(nproc) CFLAGS="-O2 -fPIC -mfpmath=sse -msse2 -DUSE_SSE"; \
     else \
-        CFLAGS="-O2 -fPIC" make -j$(nproc); \
+        make -j$(nproc) CFLAGS="-O2 -fPIC"; \
     fi && \
     make install && \
     ldconfig
@@ -53,4 +55,4 @@ RUN curl -L -o /usr/local/data/libpostal/address_expansions.dat https://data.ope
     curl -L -o /usr/local/data/libpostal/osm_ids.dat https://data.openvenues.com/libpostal/osm_ids.dat  && \
     curl -L -o /usr/local/data/libpostal/parser_tf_models.dat https://data.openvenues.com/libpostal/parser_tf_models.dat && \
     curl -L -o /usr/local/data/libpostal/parser_trie.dat https://data.openvenues.com/libpostal/parser_trie.dat && \
-    curl -L -o /usr/local/data/libpostal/transliteration_trie.dat https://
+    curl -L -o /usr/local/data/libpostal/transliteration_trie.dat https://data.openvenues.com/libpostal/transliteration_trie.dat
