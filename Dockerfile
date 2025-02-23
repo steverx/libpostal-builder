@@ -15,19 +15,18 @@ RUN apt-get update && \
         pkg-config \
         build-essential \
         nginx \
-        wget \
     && rm -rf /var/lib/apt/lists/*
 
 # Create directories
 RUN mkdir -p /usr/local/data && \
     mkdir -p /usr/local/share/libpostal
 
-# Download minimal required data files
-RUN wget -q https://raw.githubusercontent.com/openvenues/libpostal/master/data/language_classifier.dat -O /usr/local/share/libpostal/language_classifier.dat && \
-    wget -q https://raw.githubusercontent.com/openvenues/libpostal/master/data/parser/address_dictionary.dat -O /usr/local/share/libpostal/address_dictionary.dat
-
 # Clone libpostal repository with minimal depth
 RUN git clone --depth 1 --branch v1.1.0 https://github.com/openvenues/libpostal
+
+# Copy data files from cloned repository
+RUN cp /libpostal/data/language_classifier.dat /usr/local/share/libpostal/ && \
+    cp /libpostal/data/parser/address_dictionary.dat /usr/local/share/libpostal/
 
 # Build libpostal in stages
 WORKDIR /libpostal
