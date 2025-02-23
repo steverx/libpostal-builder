@@ -21,23 +21,29 @@ RUN apt-get update && \
 # Set working directory
 WORKDIR /usr/local/src
 
-# Clone and build libpostal
-RUN git clone https://github.com/openvenues/libpostal && \
-    cd libpostal && \
-    git checkout tags/v1.0.0
+# Clone libpostal repository
+RUN git clone https://github.com/openvenues/libpostal
 
-# Build libpostal (using WORKDIR and -j2)
+# --- Use WORKDIR consistently ---
 WORKDIR /usr/local/src/libpostal
+
+RUN git checkout tags/v1.0.0
+
+# Build libpostal (Conditional CFLAGS within the RUN instruction)
 RUN ./bootstrap.sh && \
     ./configure --datadir=/usr/local/data \
                 --prefix=/usr/local \
                 --disable-static \
                 --enable-shared && \
-    make -j2 CFLAGS="-O2 -fPIC" && \
+    if [ "<span class="math-inline">\(uname \-m\)" \= "x86\_64" \]; then \\
+CFLAGS\="\-O2 \-fPIC \-mfpmath\=sse \-msse2 \-DUSE\_SSE" make \-j</span>(nproc); \
+    else \
+        CFLAGS="-O2 -fPIC" make -j$(nproc); \
+    fi && \
     make install && \
     ldconfig
 
-# Download specific model files (BEST PRACTICE)
+# Download specific model files
 RUN mkdir -p /usr/local/data/libpostal
 RUN curl -L -o /usr/local/data/libpostal/address_expansions.dat https://data.openvenues.com/libpostal/address_expansions.dat && \
     curl -L -o /usr/local/data/libpostal/language_classifier.dat https://data.openvenues.com/libpostal/language_classifier.dat && \
@@ -47,9 +53,4 @@ RUN curl -L -o /usr/local/data/libpostal/address_expansions.dat https://data.ope
     curl -L -o /usr/local/data/libpostal/osm_ids.dat https://data.openvenues.com/libpostal/osm_ids.dat  && \
     curl -L -o /usr/local/data/libpostal/parser_tf_models.dat https://data.openvenues.com/libpostal/parser_tf_models.dat && \
     curl -L -o /usr/local/data/libpostal/parser_trie.dat https://data.openvenues.com/libpostal/parser_trie.dat && \
-    curl -L -o /usr/local/data/libpostal/transliteration_trie.dat https://data.openvenues.com/libpostal/transliteration_trie.dat
-
-# Final stage
-FROM python:3.9-slim
-
-# Install runtime
+    curl -L -o /usr/local/data/libpostal/transliteration_trie.dat https://
