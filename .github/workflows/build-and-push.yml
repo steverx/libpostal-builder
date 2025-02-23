@@ -1,0 +1,37 @@
+name: Build and Push libpostal-builder
+
+on:
+  push:
+    branches:
+      - main  # Or your main branch name
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}  # Use secrets!
+          password: ${{ secrets.DOCKERHUB_TOKEN }}     # Use secrets!
+
+      - name: Build and push Docker image
+        id: build-and-push  # Add an ID to access outputs later
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: your-dockerhub-username/libpostal-builder:latest  # Correct tag
+          # No need for DIGEST here, it's output by the action
+
+      # This step uses the identity token to provision an ephemeral certificate
+      # against the sigstore community Fulcio instance.
+      # - name: Sign the image (Cosign) # Optional, but recommended
+      #   run: |
+      #    echo "${{ steps.build-and-push.outputs.digest }}"
+      #     cosign sign --yes ${{ steps.build-and-push.outputs.tags }}@${{ steps.build-and-push.outputs.digest }}
