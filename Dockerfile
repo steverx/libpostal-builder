@@ -23,38 +23,29 @@ RUN apt-get update && \
 RUN mkdir -p /usr/local/data && \
     mkdir -p /usr/local/share/libpostal
 
-# Clone libpostal repository with retries
-RUN for i in 1 2 3; do \
-        git clone --depth 1 --branch v1.1.0 https://github.com/openvenues/libpostal && break || sleep 15; \
-    done
-
-# Copy data files from cloned repository
-RUN cp /libpostal/data/language_classifier.dat /usr/local/share/libpostal/ && \
-    cp /libpostal/data/parser/address_dictionary.dat /usr/local/share/libpostal/
-
-# Build libpostal in stages
-WORKDIR /libpostal
-RUN ./bootstrap.sh && \
-    ./configure --datadir=/usr/local/data \
+# Clone libpostal repository and verify filesiles
+RUN git clone --depth 1 --branch v1.1.0 https://github.com/openvenues/libpostal && \--branch v1.1.0 https://github.com/openvenues/libpostal && \
+    cd libpostal && \
+    ls -la data/ && \la data/ && \
+    ./bootstrap.sh && \    ./bootstrap.sh && \
+    ./configure --datadir=/usr/local/data \a \
                 --prefix=/usr/local \
-                --disable-data-download \
                 --disable-static \
-                --enable-shared
-
-# Build with optimizations
-RUN make CFLAGS="-O2 -fPIC" -j4 && \
+                --enable-shared && \                --enable-shared && \
+    make download-models && \ \
+    make CFLAGS="-O2 -fPIC" -j4 && \O2 -fPIC" -j4 && \
     make install && \
     ldconfig
 
 # Package only required files
-RUN mkdir -p /usr/share/nginx/html && \
-    tar czf /usr/share/nginx/html/libpostal-artifacts.tar.gz \
-        /usr/local/lib/libpostal.so* \
-        /usr/local/include/libpostal \
-        /usr/local/share/libpostal/*.dat
+RUN mkdir -p /usr/share/nginx/html && \ && \
+    tar czf /usr/share/nginx/html/libpostal-artifacts.tar.gz \ml/libpostal-artifacts.tar.gz \
+        /usr/local/lib/libpostal.so* \        /usr/local/lib/libpostal.so* \
+        /usr/local/include/libpostal \/libpostal \
+        /usr/local/share/libpostal
 
-# Configure nginx
-COPY nginx.conf /etc/nginx/nginx.conf
+# Configure nginxnginx
+COPY nginx.conf /etc/nginx/nginx.confCOPY nginx.conf /etc/nginx/nginx.conf
 
 EXPOSE 80
 
