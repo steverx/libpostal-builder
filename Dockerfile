@@ -19,7 +19,7 @@ RUN apt-get update && \
     && rm -rf /var/lib/apt/lists/*
 
 # Set working directory
-WORKDIR /usr/local/src  # Changed from /build to a more conventional location
+WORKDIR /usr/local/src
 
 # Clone and build libpostal
 RUN git clone https://github.com/openvenues/libpostal && \
@@ -27,13 +27,13 @@ RUN git clone https://github.com/openvenues/libpostal && \
     git checkout tags/v1.0.0
 
 # Build libpostal (using WORKDIR and -j$(nproc))
-WORKDIR /usr/local/src/libpostal  # Corrected WORKDIR
+WORKDIR /usr/local/src/libpostal
 RUN ./bootstrap.sh && \
     ./configure --datadir=/usr/local/data \
                 --prefix=/usr/local \
                 --disable-static \
                 --enable-shared && \
-    make -j$(nproc) CFLAGS="-O2 -fPIC" && \  # Use -j$(nproc)
+    make -j$(nproc) CFLAGS="-O2 -fPIC" && \
     make install && \
     ldconfig
 
@@ -64,17 +64,18 @@ RUN useradd -m -d /home/webuser -s /bin/bash webuser && \
     mkdir -p /usr/share/nginx/html && \
     chown -R webuser:webuser /usr/share/nginx/html
 
-# Copy files from builder *with correct ownership*
+# Copy files from builder *with correct ownership and trailing slashes*
 COPY --from=builder --chown=webuser:webuser /usr/local/lib/libpostal.so* /usr/local/lib/
-COPY --from=builder --chown=webuser:webuser /usr/local/include/libpostal /usr/local/include/
-COPY --from=builder --chown=webuser:webuser /usr/local/share/libpostal /usr/local/share/libpostal
-COPY --from=builder --chown=webuser:webuser /usr/local/data /usr/local/data
+COPY --from=builder --chown=webuser:webuser /usr/local/include/libpostal/ /usr/local/include/libpostal/
+COPY --from=builder --chown=webuser:webuser /usr/local/share/libpostal/ /usr/local/share/libpostal/
+COPY --from=builder --chown=webuser:webuser /usr/local/data/ /usr/local/data/
 
 # Configure nginx
-COPY --chown=www-data:www-data nginx.conf /etc/nginx/nginx.conf # Use www-data for nginx config
+COPY --chown=www-data:www-data nginx.conf /etc/nginx/nginx.conf
 
 # Switch to root user for entrypoint
 USER root
+
 # Set up entrypoint
 COPY entrypoint.sh /
 RUN chmod +x /entrypoint.sh
@@ -83,7 +84,7 @@ ENTRYPOINT ["/entrypoint.sh"]
 # Expose port
 EXPOSE 80
 
-# Health check (adjusted for the new setup - checking root is enough)
+# Health check
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
     CMD curl -f http://localhost/ || exit 1
 
