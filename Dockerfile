@@ -1,58 +1,105 @@
-# Builder stage
-FROM python:3.9-slim as builder
+FROM python:3.9-slim AS base
 
-# Install build dependencies
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-        gcc \
-        g++ \
-        make \
-        python3-dev \
-        curl \
-        git \
-        ca-certificates \
-        autoconf \
-        automake \
-        libtool \
-        pkg-config \
-        build-essential \
+        gcc g++ make python3-dev curl git ca-certificates \
+        autoconf automake libtool pkg-config build-essential patch \
     && rm -rf /var/lib/apt/lists/*
 
-# Set working directory
+# Create build script with proper line endings
+RUN echo '#!/bin/bash\n\
+set -e\n\
+\n\
+# Remove SSE flags from configure.ac before bootstrap\n\
+sed -i "/CFLAGS.*mfpmath=sse/d" configure.ac\n\
+sed -i "/CFLAGS.*msse2/d" configure.ac\n\
+sed -i "/USE_SSE=yes/d" configure.ac\n\
+\n\
+# Bootstrap and configure without SSE\n\
+./bootstrap.sh\n\
+CFLAGS="-O2 -fPIC" ./configure \\\n\
+    --datadir=/usr/local/data \\\n\
+    --prefix=/usr/local \\\n\
+    --disable-static \\\n\
+    --enable-shared \\\n\
+    --disable-sse\n\
+\n\
+# Build and install\n\
+make -j$(nproc)\n\
+make install\n\
+ldconfig' > /usr/local/bin/build-libpostal.sh && \
+    chmod +x /usr/local/bin/build-libpostal.sh
+
+# --- Stage for amd64 Build ---
+FROM base AS builder-amd64
 WORKDIR /usr/local/src
-
-# Clone libpostal repository
 RUN git clone https://github.com/openvenues/libpostal
-
 WORKDIR /usr/local/src/libpostal
-
 RUN git checkout tags/v1.0.0
+RUN /usr/local/bin/build-libpostal.sh
 
-# Use TARGETPLATFORM for conditional compilation
-ARG TARGETPLATFORM
+# --- Stage for arm64 Build ---
+FROM base AS builder-arm64
+WORKDIR /usr/local/src
+RUN git clone https://github.com/openvenues/libpostal
+WORKDIR /usr/local/src/libpostal
+RUN git checkout tags/v1.0.0
+RUN /usr/local/bin/build-libpostal.sh
 
-# Build libpostal (Conditional CFLAGS within the RUN instruction)
-RUN ./bootstrap.sh && \
-    ./configure --datadir=/usr/local/data \
-                --prefix=/usr/local \
-                --disable-static \
-                --enable-shared && \
-    if [ "$TARGETPLATFORM" = "linux/amd64" ]; then \
-        make -j$(nproc) CFLAGS="-O2 -fPIC -mfpmath=sse -msse2 -DUSE_SSE"; \
-    else \
-        make -j$(nproc) CFLAGS="-O2 -fPIC"; \
-    fi && \
-    make install && \
-    ldconfig
+# --- Final Stage: Combine Artifacts ---
+FROM python:3.9-slim
 
-# Download specific model files
-RUN mkdir -p /usr/local/data/libpostal
-RUN curl -L -o /usr/local/data/libpostal/address_expansions.dat https://data.openvenues.com/libpostal/address_expansions.dat && \
-    curl -L -o /usr/local/data/libpostal/language_classifier.dat https://data.openvenues.com/libpostal/language_classifier.dat && \
-    curl -L -o /usr/local/data/libpostal/language_classifier_keys.dat https://data.openvenues.com/libpostal/language_classifier_keys.dat && \
-    curl -L -o /usr/local/data/libpostal/near_dupe_hashes_tfrecords.dat https://data.openvenues.com/libpostal/near_dupe_hashes_tfrecords.dat  && \
-    curl -L -o /usr/local/data/libpostal/numex_trie.dat https://data.openvenues.com/libpostal/numex_trie.dat && \
-    curl -L -o /usr/local/data/libpostal/osm_ids.dat https://data.openvenues.com/libpostal/osm_ids.dat  && \
-    curl -L -o /usr/local/data/libpostal/parser_tf_models.dat https://data.openvenues.com/libpostal/parser_tf_models.dat && \
-    curl -L -o /usr/local/data/libpostal/parser_trie.dat https://data.openvenues.com/libpostal/parser_trie.dat && \
-    curl -L -o /usr/local/data/libpostal/transliteration_trie.dat https://data.openvenues.com/libpostal/transliteration_trie.dat
+# Copy artifacts from builders
+COPY --from=builder-amd64 /usr/local/lib/ /usr/local/lib/
+COPY --from=builder-amd64 /usr/local/include/ /usr/local/include/
+COPY --from=builder-amd64 /usr/local/share/ /usr/local/share/
+COPY --from=builder-amd64 /usr/local/data/ /usr/local/data/
+
+COPY --from=builder-arm64 /usr/local/lib/ /usr/local/lib/
+COPY --from=builder-arm64 /usr/local/include/ /usr/local/include/
+COPY --from=builder-arm64 /usr/local/share/ /usr/local/share/
+COPY --from=builder-arm64 /usr/local/data/ /usr/local/data/
+
+# Install runtime dependencies, nginx, and curl
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        nginx \
+        ca-certificates \
+        curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create directories and set permissions
+RUN mkdir -p /usr/local/data/libpostal /usr/share/nginx/html && \
+    useradd -m -d /home/libpostaluser -s /bin/bash libpostaluser && \
+    chown -R libpostaluser:libpostaluser /usr/local/data/libpostal && \
+    chown -R www-data:www-data /usr/share/nginx/html
+
+# Switch to non-root user and download data files
+USER libpostaluser
+WORKDIR /usr/local/data/libpostal
+
+# Download data files
+RUN curl -L -o address_expansions.dat https://raw.githubusercontent.com/openvenues/libpostal/v1.0.0/data/address_expansions.dat && \
+    curl -L -o language_classifier.dat https://raw.githubusercontent.com/openvenues/libpostal/v1.0.0/data/language_classifier.dat && \
+    curl -L -o language_classifier_keys.dat https://raw.githubusercontent.com/openvenues/libpostal/v1.0.0/data/language_classifier_keys.dat && \
+    curl -L -o near_dupe_hashes_tfrecords.dat https://raw.githubusercontent.com/openvenues/libpostal/v1.0.0/data/near_dupe_hashes_tfrecords.dat && \
+    curl -L -o numex_trie.dat https://raw.githubusercontent.com/openvenues/libpostal/v1.0.0/data/numex_trie.dat && \
+    curl -L -o osm_ids.dat https://raw.githubusercontent.com/openvenues/libpostal/v1.0.0/data/osm_ids.dat && \
+    curl -L -o parser_tf_models.dat https://raw.githubusercontent.com/openvenues/libpostal/v1.0.0/data/parser_tf_models.dat && \
+    curl -L -o parser_trie.dat https://raw.githubusercontent.com/openvenues/libpostal/v1.0.0/data/parser_trie.dat && \
+    curl -L -o transliteration_trie.dat https://raw.githubusercontent.com/openvenues/libpostal/v1.0.0/data/transliteration_trie.dat
+
+# Configure nginx
+USER root
+COPY --chown=www-data:www-data nginx.conf /etc/nginx/nginx.conf
+RUN mkdir -p /usr/share/nginx/html && \
+  chown -R www-data:www-data /usr/share/nginx/html
+
+# Switch back to root
+USER root
+COPY entrypoint.sh /
+RUN chmod +x /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
+HEALTHCHECK CMD curl --fail http://localhost/ || exit 1
