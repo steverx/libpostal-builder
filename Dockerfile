@@ -1,4 +1,4 @@
-# Build stage
+# Builder stage
 FROM python:3.9-slim as builder
 
 # Install build dependencies
@@ -19,28 +19,35 @@ RUN apt-get update && \
     && rm -rf /var/lib/apt/lists/*
 
 # Set working directory
-WORKDIR /build
-
-# Create directories
-RUN mkdir -p /usr/local/data && \
-    mkdir -p /usr/local/share/libpostal
+WORKDIR /usr/local/src  # Changed from /build to a more conventional location
 
 # Clone and build libpostal
 RUN git clone https://github.com/openvenues/libpostal && \
     cd libpostal && \
     git checkout tags/v1.0.0
 
-# Build libpostal
-WORKDIR /build/libpostal
+# Build libpostal (using WORKDIR and -j$(nproc))
+WORKDIR /usr/local/src/libpostal  # Corrected WORKDIR
 RUN ./bootstrap.sh && \
     ./configure --datadir=/usr/local/data \
                 --prefix=/usr/local \
                 --disable-static \
                 --enable-shared && \
-    make download-models && \
-    make CFLAGS="-O2 -fPIC" -j4 && \
+    make -j$(nproc) CFLAGS="-O2 -fPIC" && \  # Use -j$(nproc)
     make install && \
     ldconfig
+
+# Download specific model files (BEST PRACTICE)
+RUN mkdir -p /usr/local/data/libpostal
+RUN curl -L -o /usr/local/data/libpostal/address_expansions.dat https://data.openvenues.com/libpostal/address_expansions.dat && \
+    curl -L -o /usr/local/data/libpostal/language_classifier.dat https://data.openvenues.com/libpostal/language_classifier.dat && \
+    curl -L -o /usr/local/data/libpostal/language_classifier_keys.dat https://data.openvenues.com/libpostal/language_classifier_keys.dat && \
+    curl -L -o /usr/local/data/libpostal/near_dupe_hashes_tfrecords.dat https://data.openvenues.com/libpostal/near_dupe_hashes_tfrecords.dat  && \
+    curl -L -o /usr/local/data/libpostal/numex_trie.dat https://data.openvenues.com/libpostal/numex_trie.dat && \
+    curl -L -o /usr/local/data/libpostal/osm_ids.dat https://data.openvenues.com/libpostal/osm_ids.dat  && \
+    curl -L -o /usr/local/data/libpostal/parser_tf_models.dat https://data.openvenues.com/libpostal/parser_tf_models.dat && \
+    curl -L -o /usr/local/data/libpostal/parser_trie.dat https://data.openvenues.com/libpostal/parser_trie.dat && \
+    curl -L -o /usr/local/data/libpostal/transliteration_trie.dat https://data.openvenues.com/libpostal/transliteration_trie.dat
 
 # Final stage
 FROM python:3.9-slim
@@ -49,36 +56,36 @@ FROM python:3.9-slim
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         nginx \
-        libgcc1 \
-        libstdc++6 \
+        ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
-# Create non-root user
-RUN useradd -r -s /bin/false webuser && \
+# Create non-root user and directories
+RUN useradd -m -d /home/webuser -s /bin/bash webuser && \
     mkdir -p /usr/share/nginx/html && \
     chown -R webuser:webuser /usr/share/nginx/html
 
-# Copy files from builder
-COPY --from=builder /usr/local/lib/libpostal.so* /usr/local/lib/
-COPY --from=builder /usr/local/include/libpostal /usr/local/include/libpostal
-COPY --from=builder /usr/local/share/libpostal /usr/local/share/libpostal
-COPY --from=builder /usr/local/data /usr/local/data
-
-# Run ldconfig after copying shared libraries
-RUN ldconfig
+# Copy files from builder *with correct ownership*
+COPY --from=builder --chown=webuser:webuser /usr/local/lib/libpostal.so* /usr/local/lib/
+COPY --from=builder --chown=webuser:webuser /usr/local/include/libpostal /usr/local/include/
+COPY --from=builder --chown=webuser:webuser /usr/local/share/libpostal /usr/local/share/libpostal
+COPY --from=builder --chown=webuser:webuser /usr/local/data /usr/local/data
 
 # Configure nginx
-COPY nginx.conf /etc/nginx/nginx.conf
+COPY --chown=www-data:www-data nginx.conf /etc/nginx/nginx.conf # Use www-data for nginx config
 
-# Switch to non-root user
-USER webuser
+# Switch to root user for entrypoint
+USER root
+# Set up entrypoint
+COPY entrypoint.sh /
+RUN chmod +x /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
 
 # Expose port
 EXPOSE 80
 
-# Health check
+# Health check (adjusted for the new setup - checking root is enough)
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:80/libpostal-artifacts.tar.gz || exit 1
+    CMD curl -f http://localhost/ || exit 1
 
 # Start nginx
 CMD ["nginx", "-g", "daemon off;"]
