@@ -26,14 +26,14 @@ RUN git clone https://github.com/openvenues/libpostal && \
     cd libpostal && \
     git checkout tags/v1.0.0
 
-# Build libpostal (using WORKDIR and -j$(nproc))
+# Build libpostal (using WORKDIR and -j2)
 WORKDIR /usr/local/src/libpostal
 RUN ./bootstrap.sh && \
     ./configure --datadir=/usr/local/data \
                 --prefix=/usr/local \
                 --disable-static \
                 --enable-shared && \
-    make -j$(nproc) CFLAGS="-O2 -fPIC" && \
+    make -j2 CFLAGS="-O2 -fPIC" && \
     make install && \
     ldconfig
 
@@ -52,41 +52,4 @@ RUN curl -L -o /usr/local/data/libpostal/address_expansions.dat https://data.ope
 # Final stage
 FROM python:3.9-slim
 
-# Install runtime dependencies
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        nginx \
-        ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
-
-# Create non-root user and directories
-RUN useradd -m -d /home/webuser -s /bin/bash webuser && \
-    mkdir -p /usr/share/nginx/html && \
-    chown -R webuser:webuser /usr/share/nginx/html
-
-# Copy files from builder *with correct ownership and trailing slashes*
-COPY --from=builder --chown=webuser:webuser /usr/local/lib/libpostal.so* /usr/local/lib/
-COPY --from=builder --chown=webuser:webuser /usr/local/include/libpostal/ /usr/local/include/libpostal/
-COPY --from=builder --chown=webuser:webuser /usr/local/share/libpostal/ /usr/local/share/libpostal/
-COPY --from=builder --chown=webuser:webuser /usr/local/data/ /usr/local/data/
-
-# Configure nginx
-COPY --chown=www-data:www-data nginx.conf /etc/nginx/nginx.conf
-
-# Switch to root user for entrypoint
-USER root
-
-# Set up entrypoint
-COPY entrypoint.sh /
-RUN chmod +x /entrypoint.sh
-ENTRYPOINT ["/entrypoint.sh"]
-
-# Expose port
-EXPOSE 80
-
-# Health check
-HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost/ || exit 1
-
-# Start nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Install runtime
