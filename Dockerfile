@@ -23,29 +23,29 @@ RUN apt-get update && \
 RUN mkdir -p /usr/local/data && \
     mkdir -p /usr/local/share/libpostal
 
-# Clone libpostal repository and verify filesiles
-RUN git clone --depth 1 --branch v1.1.0 https://github.com/openvenues/libpostal && \--branch v1.1.0 https://github.com/openvenues/libpostal && \
+# Clone libpostal repository and build
+RUN git clone --depth 1 --branch v1.1.0 https://github.com/openvenues/libpostal && \
     cd libpostal && \
-    ls -la data/ && \la data/ && \
-    ./bootstrap.sh && \    ./bootstrap.sh && \
-    ./configure --datadir=/usr/local/data \a \
+    ls -la data/ && \
+    ./bootstrap.sh && \
+    ./configure --datadir=/usr/local/data \
                 --prefix=/usr/local \
                 --disable-static \
-                --enable-shared && \                --enable-shared && \
-    make download-models && \ \
-    make CFLAGS="-O2 -fPIC" -j4 && \O2 -fPIC" -j4 && \
+                --enable-shared && \
+    make download-models && \
+    make CFLAGS="-O2 -fPIC" -j4 && \
     make install && \
     ldconfig
 
 # Package only required files
-RUN mkdir -p /usr/share/nginx/html && \ && \
-    tar czf /usr/share/nginx/html/libpostal-artifacts.tar.gz \ml/libpostal-artifacts.tar.gz \
-        /usr/local/lib/libpostal.so* \        /usr/local/lib/libpostal.so* \
-        /usr/local/include/libpostal \/libpostal \
+RUN mkdir -p /usr/share/nginx/html && \
+    tar czf /usr/share/nginx/html/libpostal-artifacts.tar.gz \
+        /usr/local/lib/libpostal.so* \
+        /usr/local/include/libpostal \
         /usr/local/share/libpostal
 
-# Configure nginxnginx
-COPY nginx.conf /etc/nginx/nginx.confCOPY nginx.conf /etc/nginx/nginx.conf
+# Configure nginx
+COPY nginx.conf /etc/nginx/nginx.conf
 
 EXPOSE 80
 
