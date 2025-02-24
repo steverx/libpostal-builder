@@ -1,0 +1,586 @@
+#0 building with "mybuilder" instance using docker-container driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 4.46kB done
+#1 WARN: FromAsCasing: 'as' and 'FROM' keywords' casing do not match (line 2)
+#1 WARN: FromAsCasing: 'as' and 'FROM' keywords' casing do not match (line 23)
+#1 WARN: FromAsCasing: 'as' and 'FROM' keywords' casing do not match (line 38)
+#1 WARN: FromAsCasing: 'as' and 'FROM' keywords' casing do not match (line 54)
+#1 DONE 0.0s
+
+#2 [linux/amd64 internal] load metadata for docker.io/library/python:3.9-slim
+#2 DONE 0.3s
+
+#3 [linux/arm64 internal] load metadata for docker.io/library/python:3.9-slim
+#3 DONE 0.3s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 2B done
+#4 DONE 0.0s
+
+#5 [linux/arm64 base 1/3] FROM docker.io/library/python:3.9-slim@sha256:f9364cd6e0c146966f8f23fc4fd85d53f2e604bdde74e3c06565194dc4a02f85
+#5 resolve docker.io/library/python:3.9-slim@sha256:f9364cd6e0c146966f8f23fc4fd85d53f2e604bdde74e3c06565194dc4a02f85 0.0s done
+#5 DONE 0.0s
+
+#6 [linux/arm64 base 3/3] WORKDIR /usr/local/src
+#6 CACHED
+
+#7 [linux/arm64 base 2/3] RUN apt-get update &&     apt-get install -y --no-install-recommends         gcc         g++         make         python3-dev         curl         git         ca-certificates         autoconf         automake         libtool         pkg-config         build-essential     && rm -rf /var/lib/apt/lists/*
+#7 CACHED
+
+#8 [linux/arm64 builder-arm64 1/5] WORKDIR /usr/local/src
+#8 CACHED
+
+#9 [linux/arm64 builder-arm64 3/5] WORKDIR /usr/local/src/libpostal
+#9 CACHED
+
+#10 [linux/arm64 builder-arm64 2/5] RUN git clone https://github.com/openvenues/libpostal
+#10 CACHED
+
+#11 [linux/arm64 builder-arm64 4/5] RUN git checkout tags/v1.0.0
+#11 CACHED
+
+#12 [linux/amd64 base 1/3] FROM docker.io/library/python:3.9-slim@sha256:f9364cd6e0c146966f8f23fc4fd85d53f2e604bdde74e3c06565194dc4a02f85
+#12 resolve docker.io/library/python:3.9-slim@sha256:f9364cd6e0c146966f8f23fc4fd85d53f2e604bdde74e3c06565194dc4a02f85 done
+#12 DONE 0.0s
+
+#13 [linux/amd64 builder-arm64 3/5] WORKDIR /usr/local/src/libpostal
+#13 CACHED
+
+#14 [linux/amd64 base 2/3] RUN apt-get update &&     apt-get install -y --no-install-recommends         gcc         g++         make         python3-dev         curl         git         ca-certificates         autoconf         automake         libtool         pkg-config         build-essential     && rm -rf /var/lib/apt/lists/*
+#14 CACHED
+
+#15 [linux/amd64 builder-arm64 2/5] RUN git clone https://github.com/openvenues/libpostal
+#15 CACHED
+
+#16 [linux/amd64 builder-arm64 1/5] WORKDIR /usr/local/src
+#16 CACHED
+
+#17 [linux/amd64 base 3/3] WORKDIR /usr/local/src
+#17 CACHED
+
+#18 [linux/amd64 builder-arm64 4/5] RUN git checkout tags/v1.0.0
+#18 CACHED
+
+#19 [internal] load build context
+#19 transferring context: 101B done
+#19 DONE 0.0s
+
+#20 [linux/amd64 builder-arm64 5/5] RUN ./bootstrap.sh &&     ./configure --datadir=/usr/local/data                 --prefix=/usr/local                 --disable-static                 --enable-shared &&     make -j$(nproc) CFLAGS="-O2 -fPIC" &&     make install &&     ldconfig
+#20 ...
+
+#21 [linux/arm64 builder-arm64 5/5] RUN ./bootstrap.sh &&     ./configure --datadir=/usr/local/data                 --prefix=/usr/local                 --disable-static                 --enable-shared &&     make -j$(nproc) CFLAGS="-O2 -fPIC" &&     make install &&     ldconfig
+#21 2.010 libtoolize: putting auxiliary files in '.'.
+#21 2.010 libtoolize: copying file './ltmain.sh'
+#21 2.028 libtoolize: putting macros in AC_CONFIG_MACRO_DIRS, 'm4'.
+#21 2.028 libtoolize: copying file 'm4/libtool.m4'
+#21 2.040 libtoolize: copying file 'm4/ltoptions.m4'
+#21 2.051 libtoolize: copying file 'm4/ltsugar.m4'
+#21 2.065 libtoolize: copying file 'm4/ltversion.m4'
+#21 2.077 libtoolize: copying file 'm4/lt~obsolete.m4'
+#21 2.103 libtoolize: Consider adding '-I m4' to ACLOCAL_AMFLAGS in Makefile.am.
+#21 2.778 configure.ac:19: warning: The macro `AC_PROG_CC_C99' is obsolete.
+#21 2.778 configure.ac:19: You should run autoupdate.
+#21 2.778 ./lib/autoconf/c.m4:1659: AC_PROG_CC_C99 is expanded from...
+#21 2.778 configure.ac:19: the top level
+#21 2.778 configure.ac:29: warning: The macro `AC_HEADER_STDC' is obsolete.
+#21 2.778 configure.ac:29: You should run autoupdate.
+#21 2.778 ./lib/autoconf/headers.m4:704: AC_HEADER_STDC is expanded from...
+#21 2.778 configure.ac:29: the top level
+#21 2.778 configure.ac:30: warning: The macro `AC_HEADER_TIME' is obsolete.
+#21 2.778 configure.ac:30: You should run autoupdate.
+#21 2.778 ./lib/autoconf/headers.m4:743: AC_HEADER_TIME is expanded from...
+#21 2.778 configure.ac:30: the top level
+#21 2.778 configure.ac:78: warning: The macro `AC_HELP_STRING' is obsolete.
+#21 2.778 configure.ac:78: You should run autoupdate.
+#21 2.778 ./lib/autoconf/general.m4:204: AC_HELP_STRING is expanded from...
+#21 2.778 ./lib/autoconf/general.m4:1553: AC_ARG_WITH is expanded from...
+#21 2.778 m4/ax_cblas.m4:67: AX_CBLAS is expanded from...
+#21 2.778 lib/m4sugar/m4sh.m4:699: AS_IF is expanded from...
+#21 2.778 ./lib/autoconf/headers.m4:89: _AC_CHECK_HEADER_COMPILE is expanded from...
+#21 2.778 ./lib/autoconf/headers.m4:56: AC_CHECK_HEADER is expanded from...
+#21 2.778 configure.ac:78: the top level
+#21 3.285 configure.ac:14: installing './compile'
+#21 3.287 configure.ac:14: installing './config.guess'
+#21 3.288 configure.ac:14: installing './config.sub'
+#21 3.290 configure.ac:12: installing './install-sh'
+#21 3.292 configure.ac:12: installing './missing'
+#21 3.347 src/Makefile.am: installing './depcomp'
+#21 3.538 parallel-tests: installing './test-driver'
+#21 3.606 checking for a BSD-compatible install... /usr/bin/install -c
+#21 3.610 checking whether build environment is sane... yes
+#21 3.615 checking for a race-free mkdir -p... /usr/bin/mkdir -p
+#21 3.616 checking for gawk... no
+#21 3.616 checking for mawk... mawk
+#21 3.616 checking whether make sets $(MAKE)... yes
+#21 3.624 checking whether make supports nested variables... yes
+#21 3.631 checking build system type... aarch64-unknown-linux-gnu
+#21 3.662 checking host system type... aarch64-unknown-linux-gnu
+#21 3.662 checking how to print strings... printf
+#21 3.664 checking whether make supports the include directive... yes (GNU style)
+#21 3.669 checking for gcc... gcc
+#21 3.683 checking whether the C compiler works... yes
+#21 3.707 checking for C compiler default output file name... a.out
+#21 3.709 checking for suffix of executables... 
+#21 3.734 checking whether we are cross compiling... no
+#21 3.759 checking for suffix of object files... o
+#21 3.776 checking whether the compiler supports GNU C... yes
+#21 3.792 checking whether gcc accepts -g... yes
+#21 3.804 checking for gcc option to enable C11 features... none needed
+#21 3.838 checking whether gcc understands -c and -o together... yes
+#21 3.863 checking dependency style of gcc... gcc3
+#21 3.881 checking for a sed that does not truncate output... /usr/bin/sed
+#21 3.886 checking for grep that handles long lines and -e... /usr/bin/grep
+#21 3.887 checking for egrep... /usr/bin/grep -E
+#21 3.889 checking for fgrep... /usr/bin/grep -F
+#21 3.890 checking for ld used by gcc... /usr/bin/ld
+#21 3.892 checking if the linker (/usr/bin/ld) is GNU ld... yes
+#21 3.894 checking for BSD- or MS-compatible name lister (nm)... /usr/bin/nm -B
+#21 3.895 checking the name lister (/usr/bin/nm -B) interface... BSD nm
+#21 3.909 checking whether ln -s works... yes
+#21 3.909 checking the maximum length of command line arguments... 1572864
+#21 3.914 checking how to convert aarch64-unknown-linux-gnu file names to aarch64-unknown-linux-gnu format... func_convert_file_noop
+#21 3.914 checking how to convert aarch64-unknown-linux-gnu file names to toolchain format... func_convert_file_noop
+#21 3.914 checking for /usr/bin/ld option to reload object files... -r
+#21 3.915 checking for file... file
+#21 3.916 checking for objdump... objdump
+#21 3.916 checking how to recognize dependent libraries... pass_all
+#21 3.916 checking for dlltool... no
+#21 3.917 checking how to associate runtime and link libraries... printf %s\n
+#21 3.917 checking for ar... ar
+#21 3.917 checking for archiver @FILE support... @
+#21 3.936 checking for strip... strip
+#21 3.936 checking for ranlib... ranlib
+#21 3.936 checking command to parse /usr/bin/nm -B output from gcc object... ok
+#21 3.983 checking for sysroot... no
+#21 3.984 checking for a working dd... /usr/bin/dd
+#21 3.990 checking how to truncate binary pipes... /usr/bin/dd bs=4096 count=1
+#21 3.993 checking for mt... no
+#21 3.993 checking if : is a manifest tool... no
+#21 3.996 checking for stdio.h... yes
+#21 4.011 checking for stdlib.h... yes
+#21 4.028 checking for string.h... yes
+#21 4.042 checking for inttypes.h... yes
+#21 4.061 checking for stdint.h... yes
+#21 4.074 checking for strings.h... yes
+#21 4.090 checking for sys/stat.h... yes
+#21 4.106 checking for sys/types.h... yes
+#21 4.125 checking for unistd.h... yes
+#21 4.143 checking for sys/time.h... yes
+#21 4.161 checking for dlfcn.h... yes
+#21 4.183 checking for objdir... .libs
+#21 4.225 checking if gcc supports -fno-rtti -fno-exceptions... no
+#21 4.245 checking for gcc option to produce PIC... -fPIC -DPIC
+#21 4.245 checking if gcc PIC flag -fPIC -DPIC works... yes
+#21 4.263 checking if gcc static flag -static works... yes
+#21 4.303 checking if gcc supports -c -o file.o... yes
+#21 4.322 checking if gcc supports -c -o file.o... (cached) yes
+#21 4.322 checking whether the gcc linker (/usr/bin/ld) supports shared libraries... yes
+#21 4.329 checking whether -lc should be explicitly linked in... no
+#21 4.348 checking dynamic linker characteristics... GNU/Linux ld.so
+#21 4.382 checking how to hardcode library paths into programs... immediate
+#21 4.382 checking whether stripping libraries is possible... yes
+#21 4.383 checking if libtool supports shared libraries... yes
+#21 4.383 checking whether to build shared libraries... yes
+#21 4.383 checking whether to build static libraries... no
+#21 4.383 checking for library containing log... -lm
+#21 4.445 checking for egrep... (cached) /usr/bin/grep -E
+#21 4.447 checking for dirent.h that defines DIR... yes
+#21 4.467 checking for library containing opendir... none required
+#21 4.494 checking for _Bool... yes
+#21 4.534 checking for stdbool.h that conforms to C99... yes
+#21 4.554 checking for fcntl.h... yes
+#21 4.575 checking for float.h... yes
+#21 4.600 checking for inttypes.h... (cached) yes
+#21 4.600 checking for limits.h... yes
+#21 4.622 checking for locale.h... yes
+#21 4.643 checking for malloc.h... yes
+#21 4.672 checking for memory.h... yes
+#21 4.693 checking for stddef.h... yes
+#21 4.713 checking for stdint.h... (cached) yes
+#21 4.713 checking for stdlib.h... (cached) yes
+#21 4.713 checking for string.h... (cached) yes
+#21 4.713 checking for unistd.h... (cached) yes
+#21 4.713 checking for inline... inline
+#21 4.724 checking for int16_t... yes
+#21 4.772 checking for int32_t... yes
+#21 4.812 checking for int64_t... yes
+#21 4.860 checking for int8_t... yes
+#21 4.903 checking for off_t... yes
+#21 4.958 checking for size_t... yes
+#21 4.994 checking for ssize_t... yes
+#21 5.040 checking for uint16_t... yes
+#21 5.063 checking for uint32_t... yes
+#21 5.085 checking for uint64_t... yes
+#21 5.107 checking for uint8_t... yes
+#21 5.126 checking for ptrdiff_t... yes
+#21 5.167 checking for malloc... yes
+#21 5.194 checking for realloc... yes
+#21 5.224 checking for getcwd... yes
+#21 5.251 checking for gettimeofday... yes
+#21 5.280 checking for memmove... yes
+#21 5.310 checking for memset... yes
+#21 5.340 checking for regcomp... yes
+#21 5.377 checking for setlocale... yes
+#21 5.409 checking for sqrt... yes
+#21 5.446 checking for strdup... yes
+#21 5.482 checking for strndup... yes
+#21 5.520 checking for shuf... yes
+#21 5.520 checking for gshuf... no
+#21 5.521 checking for cblas.h... no
+#21 5.531 configure: extra cflags for scanner.c: 
+#21 5.549 checking that generated files are newer than configure... done
+#21 5.549 configure: creating ./config.status
+#21 5.794 config.status: creating Makefile
+#21 5.800 config.status: creating libpostal.pc
+#21 5.808 config.status: creating src/Makefile
+#21 5.826 config.status: creating test/Makefile
+#21 5.836 config.status: creating config.h
+#21 5.840 config.status: executing depfiles commands
+#21 6.202 config.status: executing libtool commands
+#21 6.232 make  all-recursive
+#21 6.234 make[1]: Entering directory '/usr/local/src/libpostal'
+#21 6.244 Making all in src
+#21 6.251 make[2]: Entering directory '/usr/local/src/libpostal/src'
+#21 6.251 gcc -DHAVE_CONFIG_H -I.. -I/usr/local/include    -Wall -Wextra -Wno-unused-function -Wformat -Werror=format-security -Winit-self -Wno-sign-compare -DLIBPOSTAL_DATA_DIR='"/usr/local/data/libpostal"' -g -mfpmath=sse -msse2 -DUSE_SSE -g -O2 -O3 -O2 -fPIC -MT libpostal-main.o -MD -MP -MF .deps/libpostal-main.Tpo -c -o libpostal-main.o `test -f 'main.c' || echo './'`main.c
+#21 6.252 gcc -DHAVE_CONFIG_H -I.. -I/usr/local/include    -Wall -Wextra -Wno-unused-function -Wformat -Werror=format-security -Winit-self -Wno-sign-compare -DLIBPOSTAL_DATA_DIR='"/usr/local/data/libpostal"' -g -mfpmath=sse -msse2 -DUSE_SSE -g -O2 -O3 -O2 -fPIC -MT libpostal-json_encode.o -MD -MP -MF .deps/libpostal-json_encode.Tpo -c -o libpostal-json_encode.o `test -f 'json_encode.c' || echo './'`json_encode.c
+#21 6.252 /bin/bash ../libtool  --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I.. -I/usr/local/include    -Wall -Wextra -Wno-unused-function -Wformat -Werror=format-security -Winit-self -Wno-sign-compare -DLIBPOSTAL_DATA_DIR='"/usr/local/data/libpostal"' -g -mfpmath=sse -msse2 -DUSE_SSE -g -O2 -O2 -O2 -fPIC -MT libpostal_la-libpostal.lo -MD -MP -MF .deps/libpostal_la-libpostal.Tpo -c -o libpostal_la-libpostal.lo `test -f 'libpostal.c' || echo './'`libpostal.c
+#21 6.254 /bin/bash ../libtool  --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I.. -I/usr/local/include    -Wall -Wextra -Wno-unused-function -Wformat -Werror=format-security -Winit-self -Wno-sign-compare -DLIBPOSTAL_DATA_DIR='"/usr/local/data/libpostal"' -g -mfpmath=sse -msse2 -DUSE_SSE -g -O2 -O2 -O2 -fPIC -MT libpostal_la-address_dictionary.lo -MD -MP -MF .deps/libpostal_la-address_dictionary.Tpo -c -o libpostal_la-address_dictionary.lo `test -f 'address_dictionary.c' || echo './'`address_dictionary.c
+#21 6.255 /bin/bash ../libtool  --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I.. -I/usr/local/include    -Wall -Wextra -Wno-unused-function -Wformat -Werror=format-security -Winit-self -Wno-sign-compare -DLIBPOSTAL_DATA_DIR='"/usr/local/data/libpostal"' -g -mfpmath=sse -msse2 -DUSE_SSE -g -O2 -O2 -O2 -fPIC -MT libpostal_la-transliterate.lo -MD -MP -MF .deps/libpostal_la-transliterate.Tpo -c -o libpostal_la-transliterate.lo `test -f 'transliterate.c' || echo './'`transliterate.c
+#21 6.256 /bin/bash ../libtool  --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I.. -I/usr/local/include    -Wall -Wextra -Wno-unused-function -Wformat -Werror=format-security -Winit-self -Wno-sign-compare -DLIBPOSTAL_DATA_DIR='"/usr/local/data/libpostal"' -g -mfpmath=sse -msse2 -DUSE_SSE -g -O2 -O2 -O2 -fPIC -MT libpostal_la-tokens.lo -MD -MP -MF .deps/libpostal_la-tokens.Tpo -c -o libpostal_la-tokens.lo `test -f 'tokens.c' || echo './'`tokens.c
+#21 6.257 /bin/bash ../libtool  --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I.. -I/usr/local/include    -Wall -Wextra -Wno-unused-function -Wformat -Werror=format-security -Winit-self -Wno-sign-compare -DLIBPOSTAL_DATA_DIR='"/usr/local/data/libpostal"' -g -mfpmath=sse -msse2 -DUSE_SSE -g -O2 -O2 -O2 -fPIC -MT libpostal_la-trie.lo -MD -MP -MF .deps/libpostal_la-trie.Tpo -c -o libpostal_la-trie.lo `test -f 'trie.c' || echo './'`trie.c
+#21 6.258 /bin/bash ../libtool  --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I.. -I/usr/local/include    -Wall -Wextra -Wno-unused-function -Wformat -Werror=format-security -Winit-self -Wno-sign-compare -DLIBPOSTAL_DATA_DIR='"/usr/local/data/libpostal"' -g -mfpmath=sse -msse2 -DUSE_SSE -g -O2 -O2 -O2 -fPIC -MT libpostal_la-trie_search.lo -MD -MP -MF .deps/libpostal_la-trie_search.Tpo -c -o libpostal_la-trie_search.lo `test -f 'trie_search.c' || echo './'`trie_search.c
+#21 6.261 gcc: error: unrecognized command-line option ‘-mfpmath=sse’
+#21 6.262 gcc: error: unrecognized command-line option ‘-msse2’
+#21 6.263 make[2]: *** [Makefile:4027: libpostal-main.o] Error 1
+#21 6.263 make[2]: *** Waiting for unfinished jobs....
+#21 6.265 gcc: error: unrecognized command-line option ‘-mfpmath=sse’
+#21 6.265 gcc: error: unrecognized command-line option ‘-msse2’
+#21 6.266 make[2]: *** [Makefile:4041: libpostal-json_encode.o] Error 1
+#21 6.324 libtool: compile:  gcc -DHAVE_CONFIG_H -I.. -I/usr/local/include -Wall -Wextra -Wno-unused-function -Wformat -Werror=format-security -Winit-self -Wno-sign-compare -DLIBPOSTAL_DATA_DIR=\"/usr/local/data/libpostal\" -g -mfpmath=sse -msse2 -DUSE_SSE -g -O2 -O2 -O2 -fPIC -MT libpostal_la-transliterate.lo -MD -MP -MF .deps/libpostal_la-transliterate.Tpo -c transliterate.c  -fPIC -DPIC -o .libs/libpostal_la-transliterate.o
+#21 6.332 libtool: compile:  gcc -DHAVE_CONFIG_H -I.. -I/usr/local/include -Wall -Wextra -Wno-unused-function -Wformat -Werror=format-security -Winit-self -Wno-sign-compare -DLIBPOSTAL_DATA_DIR=\"/usr/local/data/libpostal\" -g -mfpmath=sse -msse2 -DUSE_SSE -g -O2 -O2 -O2 -fPIC -MT libpostal_la-trie_search.lo -MD -MP -MF .deps/libpostal_la-trie_search.Tpo -c trie_search.c  -fPIC -DPIC -o .libs/libpostal_la-trie_search.o
+#21 6.339 libtool: compile:  gcc -DHAVE_CONFIG_H -I.. -I/usr/local/include -Wall -Wextra -Wno-unused-function -Wformat -Werror=format-security -Winit-self -Wno-sign-compare -DLIBPOSTAL_DATA_DIR=\"/usr/local/data/libpostal\" -g -mfpmath=sse -msse2 -DUSE_SSE -g -O2 -O2 -O2 -fPIC -MT libpostal_la-trie.lo -MD -MP -MF .deps/libpostal_la-trie.Tpo -c trie.c  -fPIC -DPIC -o .libs/libpostal_la-trie.o
+#21 6.341 libtool: compile:  gcc -DHAVE_CONFIG_H -I.. -I/usr/local/include -Wall -Wextra -Wno-unused-function -Wformat -Werror=format-security -Winit-self -Wno-sign-compare -DLIBPOSTAL_DATA_DIR=\"/usr/local/data/libpostal\" -g -mfpmath=sse -msse2 -DUSE_SSE -g -O2 -O2 -O2 -fPIC -MT libpostal_la-tokens.lo -MD -MP -MF .deps/libpostal_la-tokens.Tpo -c tokens.c  -fPIC -DPIC -o .libs/libpostal_la-tokens.o
+#21 6.342 gcc: error: unrecognized command-line option '-mfpmath=sse'
+#21 6.342 gcc: error: unrecognized command-line option '-msse2'
+#21 6.343 make[2]: *** [Makefile:1402: libpostal_la-trie_search.lo] Error 1
+#21 6.345 gcc: error: unrecognized command-line option '-mfpmath=sse'
+#21 6.347 gcc: error: unrecognized command-line option '-msse2'
+#21 6.347 gcc: error: unrecognized command-line option '-mfpmath=sse'
+#21 6.347 gcc: error: unrecognized command-line option '-mfpmath=sse'
+#21 6.347 gcc: error: unrecognized command-line option '-msse2'
+#21 6.348 libtool: compile:  gcc -DHAVE_CONFIG_H -I.. -I/usr/local/include -Wall -Wextra -Wno-unused-function -Wformat -Werror=format-security -Winit-self -Wno-sign-compare -DLIBPOSTAL_DATA_DIR=\"/usr/local/data/libpostal\" -g -mfpmath=sse -msse2 -DUSE_SSE -g -O2 -O2 -O2 -fPIC -MT libpostal_la-libpostal.lo -MD -MP -MF .deps/libpostal_la-libpostal.Tpo -c libpostal.c  -fPIC -DPIC -o .libs/libpostal_la-libpostal.o
+#21 6.348 gcc: error: unrecognized command-line option '-msse2'
+#21 6.348 make[2]: *** [Makefile:1388: libpostal_la-tokens.lo] Error 1
+#21 6.349 make[2]: *** [Makefile:1395: libpostal_la-trie.lo] Error 1
+#21 6.350 make[2]: *** [Makefile:1381: libpostal_la-transliterate.lo] Error 1
+#21 6.353 libtool: compile:  gcc -DHAVE_CONFIG_H -I.. -I/usr/local/include -Wall -Wextra -Wno-unused-function -Wformat -Werror=format-security -Winit-self -Wno-sign-compare -DLIBPOSTAL_DATA_DIR=\"/usr/local/data/libpostal\" -g -mfpmath=sse -msse2 -DUSE_SSE -g -O2 -O2 -O2 -fPIC -MT libpostal_la-address_dictionary.lo -MD -MP -MF .deps/libpostal_la-address_dictionary.Tpo -c address_dictionary.c  -fPIC -DPIC -o .libs/libpostal_la-address_dictionary.o
+#21 6.353 gcc: error: unrecognized command-line option '-mfpmath=sse'
+#21 6.354 gcc: error: unrecognized command-line option '-msse2'
+#21 6.354 make[2]: *** [Makefile:1367: libpostal_la-libpostal.lo] Error 1
+#21 6.359 gcc: error: unrecognized command-line option '-mfpmath=sse'
+#21 6.359 gcc: error: unrecognized command-line option '-msse2'
+#21 6.360 make[2]: Leaving directory '/usr/local/src/libpostal/src'
+#21 6.360 make[2]: *** [Makefile:1374: libpostal_la-address_dictionary.lo] Error 1
+#21 6.360 make[1]: Leaving directory '/usr/local/src/libpostal'
+#21 6.360 make[1]: *** [Makefile:456: all-recursive] Error 1
+#21 6.360 make: *** [Makefile:365: all] Error 2
+#21 ERROR: process "/bin/sh -c ./bootstrap.sh &&     ./configure --datadir=/usr/local/data                 --prefix=/usr/local                 --disable-static                 --enable-shared &&     make -j$(nproc) CFLAGS=\"-O2 -fPIC\" &&     make install &&     ldconfig" did not complete successfully: exit code: 2
+
+#22 [linux/arm64 builder-amd64 5/5] RUN ./bootstrap.sh &&     ./configure --datadir=/usr/local/data                 --prefix=/usr/local                 --disable-static                 --enable-shared &&     make -j$(nproc) CFLAGS="-O2 -fPIC -mfpmath=sse -msse2 -DUSE_SSE" &&     make install && ldconfig
+#22 2.015 libtoolize: putting auxiliary files in '.'.
+#22 2.015 libtoolize: copying file './ltmain.sh'
+#22 2.034 libtoolize: putting macros in AC_CONFIG_MACRO_DIRS, 'm4'.
+#22 2.034 libtoolize: copying file 'm4/libtool.m4'
+#22 2.045 libtoolize: copying file 'm4/ltoptions.m4'
+#22 2.057 libtoolize: copying file 'm4/ltsugar.m4'
+#22 2.069 libtoolize: copying file 'm4/ltversion.m4'
+#22 2.080 libtoolize: copying file 'm4/lt~obsolete.m4'
+#22 2.108 libtoolize: Consider adding '-I m4' to ACLOCAL_AMFLAGS in Makefile.am.
+#22 2.786 configure.ac:19: warning: The macro `AC_PROG_CC_C99' is obsolete.
+#22 2.786 configure.ac:19: You should run autoupdate.
+#22 2.786 ./lib/autoconf/c.m4:1659: AC_PROG_CC_C99 is expanded from...
+#22 2.786 configure.ac:19: the top level
+#22 2.786 configure.ac:29: warning: The macro `AC_HEADER_STDC' is obsolete.
+#22 2.786 configure.ac:29: You should run autoupdate.
+#22 2.786 ./lib/autoconf/headers.m4:704: AC_HEADER_STDC is expanded from...
+#22 2.786 configure.ac:29: the top level
+#22 2.786 configure.ac:30: warning: The macro `AC_HEADER_TIME' is obsolete.
+#22 2.786 configure.ac:30: You should run autoupdate.
+#22 2.786 ./lib/autoconf/headers.m4:743: AC_HEADER_TIME is expanded from...
+#22 2.786 configure.ac:30: the top level
+#22 2.786 configure.ac:78: warning: The macro `AC_HELP_STRING' is obsolete.
+#22 2.786 configure.ac:78: You should run autoupdate.
+#22 2.786 ./lib/autoconf/general.m4:204: AC_HELP_STRING is expanded from...
+#22 2.786 ./lib/autoconf/general.m4:1553: AC_ARG_WITH is expanded from...
+#22 2.786 m4/ax_cblas.m4:67: AX_CBLAS is expanded from...
+#22 2.786 lib/m4sugar/m4sh.m4:699: AS_IF is expanded from...
+#22 2.786 ./lib/autoconf/headers.m4:89: _AC_CHECK_HEADER_COMPILE is expanded from...
+#22 2.786 ./lib/autoconf/headers.m4:56: AC_CHECK_HEADER is expanded from...
+#22 2.786 configure.ac:78: the top level
+#22 3.309 configure.ac:14: installing './compile'
+#22 3.311 configure.ac:14: installing './config.guess'
+#22 3.312 configure.ac:14: installing './config.sub'
+#22 3.314 configure.ac:12: installing './install-sh'
+#22 3.317 configure.ac:12: installing './missing'
+#22 3.361 src/Makefile.am: installing './depcomp'
+#22 3.547 parallel-tests: installing './test-driver'
+#22 3.625 checking for a BSD-compatible install... /usr/bin/install -c
+#22 3.629 checking whether build environment is sane... yes
+#22 3.634 checking for a race-free mkdir -p... /usr/bin/mkdir -p
+#22 3.635 checking for gawk... no
+#22 3.636 checking for mawk... mawk
+#22 3.636 checking whether make sets $(MAKE)... yes
+#22 3.646 checking whether make supports nested variables... yes
+#22 3.655 checking build system type... aarch64-unknown-linux-gnu
+#22 3.680 checking host system type... aarch64-unknown-linux-gnu
+#22 3.680 checking how to print strings... printf
+#22 3.682 checking whether make supports the include directive... yes (GNU style)
+#22 3.687 checking for gcc... gcc
+#22 3.700 checking whether the C compiler works... yes
+#22 3.725 checking for C compiler default output file name... a.out
+#22 3.726 checking for suffix of executables... 
+#22 3.750 checking whether we are cross compiling... no
+#22 3.775 checking for suffix of object files... o
+#22 3.789 checking whether the compiler supports GNU C... yes
+#22 3.801 checking whether gcc accepts -g... yes
+#22 3.814 checking for gcc option to enable C11 features... none needed
+#22 3.848 checking whether gcc understands -c and -o together... yes
+#22 3.873 checking dependency style of gcc... gcc3
+#22 3.894 checking for a sed that does not truncate output... /usr/bin/sed
+#22 3.897 checking for grep that handles long lines and -e... /usr/bin/grep
+#22 3.899 checking for egrep... /usr/bin/grep -E
+#22 3.900 checking for fgrep... /usr/bin/grep -F
+#22 3.902 checking for ld used by gcc... /usr/bin/ld
+#22 3.905 checking if the linker (/usr/bin/ld) is GNU ld... yes
+#22 3.907 checking for BSD- or MS-compatible name lister (nm)... /usr/bin/nm -B
+#22 3.909 checking the name lister (/usr/bin/nm -B) interface... BSD nm
+#22 3.924 checking whether ln -s works... yes
+#22 3.924 checking the maximum length of command line arguments... 1572864
+#22 3.929 checking how to convert aarch64-unknown-linux-gnu file names to aarch64-unknown-linux-gnu format... func_convert_file_noop
+#22 3.929 checking how to convert aarch64-unknown-linux-gnu file names to toolchain format... func_convert_file_noop
+#22 3.929 checking for /usr/bin/ld option to reload object files... -r
+#22 3.929 checking for file... file
+#22 3.929 checking for objdump... objdump
+#22 3.929 checking how to recognize dependent libraries... pass_all
+#22 3.930 checking for dlltool... no
+#22 3.930 checking how to associate runtime and link libraries... printf %s\n
+#22 3.930 checking for ar... ar
+#22 3.931 checking for archiver @FILE support... @
+#22 3.947 checking for strip... strip
+#22 3.947 checking for ranlib... ranlib
+#22 3.947 checking command to parse /usr/bin/nm -B output from gcc object... ok
+#22 3.992 checking for sysroot... no
+#22 3.993 checking for a working dd... /usr/bin/dd
+#22 3.997 checking how to truncate binary pipes... /usr/bin/dd bs=4096 count=1
+#22 4.001 checking for mt... no
+#22 4.001 checking if : is a manifest tool... no
+#22 4.004 checking for stdio.h... yes
+#22 4.015 checking for stdlib.h... yes
+#22 4.031 checking for string.h... yes
+#22 4.046 checking for inttypes.h... yes
+#22 4.062 checking for stdint.h... yes
+#22 4.078 checking for strings.h... yes
+#22 4.093 checking for sys/stat.h... yes
+#22 4.109 checking for sys/types.h... yes
+#22 4.128 checking for unistd.h... yes
+#22 4.146 checking for sys/time.h... yes
+#22 4.163 checking for dlfcn.h... yes
+#22 4.183 checking for objdir... .libs
+#22 4.226 checking if gcc supports -fno-rtti -fno-exceptions... no
+#22 4.242 checking for gcc option to produce PIC... -fPIC -DPIC
+#22 4.242 checking if gcc PIC flag -fPIC -DPIC works... yes
+#22 4.262 checking if gcc static flag -static works... yes
+#22 4.304 checking if gcc supports -c -o file.o... yes
+#22 4.324 checking if gcc supports -c -o file.o... (cached) yes
+#22 4.325 checking whether the gcc linker (/usr/bin/ld) supports shared libraries... yes
+#22 4.333 checking whether -lc should be explicitly linked in... no
+#22 4.351 checking dynamic linker characteristics... GNU/Linux ld.so
+#22 4.386 checking how to hardcode library paths into programs... immediate
+#22 4.386 checking whether stripping libraries is possible... yes
+#22 4.387 checking if libtool supports shared libraries... yes
+#22 4.387 checking whether to build shared libraries... yes
+#22 4.387 checking whether to build static libraries... no
+#22 4.388 checking for library containing log... -lm
+#22 4.447 checking for egrep... (cached) /usr/bin/grep -E
+#22 4.449 checking for dirent.h that defines DIR... yes
+#22 4.470 checking for library containing opendir... none required
+#22 4.496 checking for _Bool... yes
+#22 4.538 checking for stdbool.h that conforms to C99... yes
+#22 4.557 checking for fcntl.h... yes
+#22 4.584 checking for float.h... yes
+#22 4.607 checking for inttypes.h... (cached) yes
+#22 4.607 checking for limits.h... yes
+#22 4.629 checking for locale.h... yes
+#22 4.654 checking for malloc.h... yes
+#22 4.679 checking for memory.h... yes
+#22 4.697 checking for stddef.h... yes
+#22 4.715 checking for stdint.h... (cached) yes
+#22 4.716 checking for stdlib.h... (cached) yes
+#22 4.716 checking for string.h... (cached) yes
+#22 4.716 checking for unistd.h... (cached) yes
+#22 4.716 checking for inline... inline
+#22 4.727 checking for int16_t... yes
+#22 4.774 checking for int32_t... yes
+#22 4.815 checking for int64_t... yes
+#22 4.863 checking for int8_t... yes
+#22 4.908 checking for off_t... yes
+#22 4.963 checking for size_t... yes
+#22 4.998 checking for ssize_t... yes
+#22 5.044 checking for uint16_t... yes
+#22 5.066 checking for uint32_t... yes
+#22 5.088 checking for uint64_t... yes
+#22 5.109 checking for uint8_t... yes
+#22 5.129 checking for ptrdiff_t... yes
+#22 5.169 checking for malloc... yes
+#22 5.197 checking for realloc... yes
+#22 5.226 checking for getcwd... yes
+#22 5.253 checking for gettimeofday... yes
+#22 5.283 checking for memmove... yes
+#22 5.313 checking for memset... yes
+#22 5.345 checking for regcomp... yes
+#22 5.379 checking for setlocale... yes
+#22 5.419 checking for sqrt... yes
+#22 5.449 checking for strdup... yes
+#22 5.481 checking for strndup... yes
+#22 5.515 checking for shuf... yes
+#22 5.515 checking for gshuf... no
+#22 5.516 checking for cblas.h... no
+#22 5.528 configure: extra cflags for scanner.c: 
+#22 5.545 checking that generated files are newer than configure... done
+#22 5.545 configure: creating ./config.status
+#22 5.792 config.status: creating Makefile
+#22 5.799 config.status: creating libpostal.pc
+#22 5.805 config.status: creating src/Makefile
+#22 5.819 config.status: creating test/Makefile
+#22 5.831 config.status: creating config.h
+#22 5.836 config.status: executing depfiles commands
+#22 6.200 config.status: executing libtool commands
+#22 6.227 make  all-recursive
+#22 6.228 make[1]: Entering directory '/usr/local/src/libpostal'
+#22 6.232 Making all in src
+#22 6.237 make[2]: Entering directory '/usr/local/src/libpostal/src'
+#22 6.237 gcc -DHAVE_CONFIG_H -I.. -I/usr/local/include    -Wall -Wextra -Wno-unused-function -Wformat -Werror=format-security -Winit-self -Wno-sign-compare -DLIBPOSTAL_DATA_DIR='"/usr/local/data/libpostal"' -g -mfpmath=sse -msse2 -DUSE_SSE -g -O2 -O3 -O2 -fPIC -mfpmath=sse -msse2 -DUSE_SSE -MT libpostal-main.o -MD -MP -MF .deps/libpostal-main.Tpo -c -o libpostal-main.o `test -f 'main.c' || echo './'`main.c
+#22 6.237 gcc -DHAVE_CONFIG_H -I.. -I/usr/local/include    -Wall -Wextra -Wno-unused-function -Wformat -Werror=format-security -Winit-self -Wno-sign-compare -DLIBPOSTAL_DATA_DIR='"/usr/local/data/libpostal"' -g -mfpmath=sse -msse2 -DUSE_SSE -g -O2 -O3 -O2 -fPIC -mfpmath=sse -msse2 -DUSE_SSE -MT libpostal-json_encode.o -MD -MP -MF .deps/libpostal-json_encode.Tpo -c -o libpostal-json_encode.o `test -f 'json_encode.c' || echo './'`json_encode.c
+#22 6.237 /bin/bash ../libtool  --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I.. -I/usr/local/include    -Wall -Wextra -Wno-unused-function -Wformat -Werror=format-security -Winit-self -Wno-sign-compare -DLIBPOSTAL_DATA_DIR='"/usr/local/data/libpostal"' -g -mfpmath=sse -msse2 -DUSE_SSE -g -O2 -O2 -O2 -fPIC -mfpmath=sse -msse2 -DUSE_SSE -MT libpostal_la-libpostal.lo -MD -MP -MF .deps/libpostal_la-libpostal.Tpo -c -o libpostal_la-libpostal.lo `test -f 'libpostal.c' || echo './'`libpostal.c
+#22 6.238 /bin/bash ../libtool  --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I.. -I/usr/local/include    -Wall -Wextra -Wno-unused-function -Wformat -Werror=format-security -Winit-self -Wno-sign-compare -DLIBPOSTAL_DATA_DIR='"/usr/local/data/libpostal"' -g -mfpmath=sse -msse2 -DUSE_SSE -g -O2 -O2 -O2 -fPIC -mfpmath=sse -msse2 -DUSE_SSE -MT libpostal_la-address_dictionary.lo -MD -MP -MF .deps/libpostal_la-address_dictionary.Tpo -c -o libpostal_la-address_dictionary.lo `test -f 'address_dictionary.c' || echo './'`address_dictionary.c
+#22 6.239 /bin/bash ../libtool  --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I.. -I/usr/local/include    -Wall -Wextra -Wno-unused-function -Wformat -Werror=format-security -Winit-self -Wno-sign-compare -DLIBPOSTAL_DATA_DIR='"/usr/local/data/libpostal"' -g -mfpmath=sse -msse2 -DUSE_SSE -g -O2 -O2 -O2 -fPIC -mfpmath=sse -msse2 -DUSE_SSE -MT libpostal_la-transliterate.lo -MD -MP -MF .deps/libpostal_la-transliterate.Tpo -c -o libpostal_la-transliterate.lo `test -f 'transliterate.c' || echo './'`transliterate.c
+#22 6.240 /bin/bash ../libtool  --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I.. -I/usr/local/include    -Wall -Wextra -Wno-unused-function -Wformat -Werror=format-security -Winit-self -Wno-sign-compare -DLIBPOSTAL_DATA_DIR='"/usr/local/data/libpostal"' -g -mfpmath=sse -msse2 -DUSE_SSE -g -O2 -O2 -O2 -fPIC -mfpmath=sse -msse2 -DUSE_SSE -MT libpostal_la-tokens.lo -MD -MP -MF .deps/libpostal_la-tokens.Tpo -c -o libpostal_la-tokens.lo `test -f 'tokens.c' || echo './'`tokens.c
+#22 6.240 /bin/bash ../libtool  --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I.. -I/usr/local/include    -Wall -Wextra -Wno-unused-function -Wformat -Werror=format-security -Winit-self -Wno-sign-compare -DLIBPOSTAL_DATA_DIR='"/usr/local/data/libpostal"' -g -mfpmath=sse -msse2 -DUSE_SSE -g -O2 -O2 -O2 -fPIC -mfpmath=sse -msse2 -DUSE_SSE -MT libpostal_la-trie.lo -MD -MP -MF .deps/libpostal_la-trie.Tpo -c -o libpostal_la-trie.lo `test -f 'trie.c' || echo './'`trie.c
+#22 6.243 gcc: error: unrecognized command-line option ‘-mfpmath=sse’
+#22 6.244 gcc: error: unrecognized command-line option ‘-msse2’
+#22 6.244 /bin/bash ../libtool  --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I.. -I/usr/local/include    -Wall -Wextra -Wno-unused-function -Wformat -Werror=format-security -Winit-self -Wno-sign-compare -DLIBPOSTAL_DATA_DIR='"/usr/local/data/libpostal"' -g -mfpmath=sse -msse2 -DUSE_SSE -g -O2 -O2 -O2 -fPIC -mfpmath=sse -msse2 -DUSE_SSE -MT libpostal_la-trie_search.lo -MD -MP -MF .deps/libpostal_la-trie_search.Tpo -c -o libpostal_la-trie_search.lo `test -f 'trie_search.c' || echo './'`trie_search.c
+#22 6.244 gcc: error: unrecognized command-line option ‘-mfpmath=sse’
+#22 6.244 gcc: error: unrecognized command-line option ‘-msse2’
+#22 6.248 gcc: error: unrecognized command-line option ‘-mfpmath=sse’
+#22 6.248 gcc: error: unrecognized command-line option ‘-msse2’
+#22 6.248 make[2]: *** [Makefile:4041: libpostal-json_encode.o] Error 1
+#22 6.248 make[2]: *** Waiting for unfinished jobs....
+#22 6.248 gcc: error: unrecognized command-line option ‘-mfpmath=sse’
+#22 6.250 gcc: error: unrecognized command-line option ‘-msse2’
+#22 6.250 make[2]: *** [Makefile:4027: libpostal-main.o] Error 1
+#22 6.314 libtool: compile:  gcc -DHAVE_CONFIG_H -I.. -I/usr/local/include -Wall -Wextra -Wno-unused-function -Wformat -Werror=format-security -Winit-self -Wno-sign-compare -DLIBPOSTAL_DATA_DIR=\"/usr/local/data/libpostal\" -g -mfpmath=sse -msse2 -DUSE_SSE -g -O2 -O2 -O2 -fPIC -mfpmath=sse -msse2 -DUSE_SSE -MT libpostal_la-trie.lo -MD -MP -MF .deps/libpostal_la-trie.Tpo -c trie.c  -fPIC -DPIC -o .libs/libpostal_la-trie.o
+#22 6.318 libtool: compile:  gcc -DHAVE_CONFIG_H -I.. -I/usr/local/include -Wall -Wextra -Wno-unused-function -Wformat -Werror=format-security -Winit-self -Wno-sign-compare -DLIBPOSTAL_DATA_DIR=\"/usr/local/data/libpostal\" -g -mfpmath=sse -msse2 -DUSE_SSE -g -O2 -O2 -O2 -fPIC -mfpmath=sse -msse2 -DUSE_SSE -MT libpostal_la-transliterate.lo -MD -MP -MF .deps/libpostal_la-transliterate.Tpo -c transliterate.c  -fPIC -DPIC -o .libs/libpostal_la-transliterate.o
+#22 6.325 libtool: compile:  gcc -DHAVE_CONFIG_H -I.. -I/usr/local/include -Wall -Wextra -Wno-unused-function -Wformat -Werror=format-security -Winit-self -Wno-sign-compare -DLIBPOSTAL_DATA_DIR=\"/usr/local/data/libpostal\" -g -mfpmath=sse -msse2 -DUSE_SSE -g -O2 -O2 -O2 -fPIC -mfpmath=sse -msse2 -DUSE_SSE -MT libpostal_la-tokens.lo -MD -MP -MF .deps/libpostal_la-tokens.Tpo -c tokens.c  -fPIC -DPIC -o .libs/libpostal_la-tokens.o
+#22 6.325 libtool: compile:  gcc -DHAVE_CONFIG_H -I.. -I/usr/local/include -Wall -Wextra -Wno-unused-function -Wformat -Werror=format-security -Winit-self -Wno-sign-compare -DLIBPOSTAL_DATA_DIR=\"/usr/local/data/libpostal\" -g -mfpmath=sse -msse2 -DUSE_SSE -g -O2 -O2 -O2 -fPIC -mfpmath=sse -msse2 -DUSE_SSE -MT libpostal_la-trie_search.lo -MD -MP -MF .deps/libpostal_la-trie_search.Tpo -c trie_search.c  -fPIC -DPIC -o .libs/libpostal_la-trie_search.o
+#22 6.325 gcc: error: unrecognized command-line option '-mfpmath=sse'
+#22 6.325 gcc: error: unrecognized command-line option '-msse2'
+#22 6.331 gcc: error: unrecognized command-line option '-mfpmath=sse'
+#22 6.331 gcc: error: unrecognized command-line option '-msse2'
+#22 6.332 gcc: error: unrecognized command-line option '-mfpmath=sse'
+#22 6.332 gcc: error: unrecognized command-line option '-msse2'
+#22 6.334 make[2]: *** [Makefile:1395: libpostal_la-trie.lo] Error 1
+#22 6.335 gcc: error: unrecognized command-line option '-mfpmath=sse'
+#22 6.336 gcc: error: unrecognized command-line option '-msse2'
+#22 6.338 libtool: compile:  gcc -DHAVE_CONFIG_H -I.. -I/usr/local/include -Wall -Wextra -Wno-unused-function -Wformat -Werror=format-security -Winit-self -Wno-sign-compare -DLIBPOSTAL_DATA_DIR=\"/usr/local/data/libpostal\" -g -mfpmath=sse -msse2 -DUSE_SSE -g -O2 -O2 -O2 -fPIC -mfpmath=sse -msse2 -DUSE_SSE -MT libpostal_la-libpostal.lo -MD -MP -MF .deps/libpostal_la-libpostal.Tpo -c libpostal.c  -fPIC -DPIC -o .libs/libpostal_la-libpostal.o
+#22 6.340 gcc: error: unrecognized command-line option '-mfpmath=sse'
+#22 6.341 gcc: error: unrecognized command-line option '-mfpmath=sse'
+#22 6.342 gcc: error: unrecognized command-line option '-msse2'
+#22 6.342 gcc: error: unrecognized command-line option '-mfpmath=sse'
+#22 6.343 gcc: error: unrecognized command-line option '-msse2'
+#22 6.343 gcc: error: unrecognized command-line option '-msse2'
+#22 6.343 make[2]: *** [Makefile:1402: libpostal_la-trie_search.lo] Error 1
+#22 6.347 gcc: error: unrecognized command-line option '-mfpmath=sse'
+#22 6.347 gcc: error: unrecognized command-line option '-msse2'
+#22 6.349 make[2]: *** [Makefile:1381: libpostal_la-transliterate.lo] Error 1
+#22 6.350 gcc: error: unrecognized command-line option '-mfpmath=sse'
+#22 6.350 gcc: error: unrecognized command-line option '-mfpmath=sse'
+#22 6.351 gcc: error: unrecognized command-line option '-msse2'
+#22 6.351 gcc: error: unrecognized command-line option '-msse2'
+#22 6.352 make[2]: *** [Makefile:1367: libpostal_la-libpostal.lo] Error 1
+#22 6.352 make[2]: *** [Makefile:1388: libpostal_la-tokens.lo] Error 1
+#22 6.360 libtool: compile:  gcc -DHAVE_CONFIG_H -I.. -I/usr/local/include -Wall -Wextra -Wno-unused-function -Wformat -Werror=format-security -Winit-self -Wno-sign-compare -DLIBPOSTAL_DATA_DIR=\"/usr/local/data/libpostal\" -g -mfpmath=sse -msse2 -DUSE_SSE -g -O2 -O2 -O2 -fPIC -mfpmath=sse -msse2 -DUSE_SSE -MT libpostal_la-address_dictionary.lo -MD -MP -MF .deps/libpostal_la-address_dictionary.Tpo -c address_dictionary.c  -fPIC -DPIC -o .libs/libpostal_la-address_dictionary.o
+#22 6.365 gcc: error: unrecognized command-line option '-mfpmath=sse'
+#22 6.365 gcc: error: unrecognized command-line option '-msse2'
+#22 6.370 gcc: error: unrecognized command-line option '-mfpmath=sse'
+#22 6.370 gcc: error: unrecognized command-line option '-msse2'
+#22 6.384 make[2]: Leaving directory '/usr/local/src/libpostal/src'
+#22 6.384 make[1]: Leaving directory '/usr/local/src/libpostal'
+#22 6.384 make[2]: *** [Makefile:1374: libpostal_la-address_dictionary.lo] Error 1
+#22 6.384 make[1]: *** [Makefile:456: all-recursive] Error 1
+#22 6.384 make: *** [Makefile:365: all] Error 2
+#22 ERROR: process "/bin/sh -c ./bootstrap.sh &&     ./configure --datadir=/usr/local/data                 --prefix=/usr/local                 --disable-static                 --enable-shared &&     make -j$(nproc) CFLAGS=\"-O2 -fPIC -mfpmath=sse -msse2 -DUSE_SSE\" &&     make install && ldconfig" did not complete successfully: exit code: 2
+
+#23 [linux/amd64 builder-amd64 5/5] RUN ./bootstrap.sh &&     ./configure --datadir=/usr/local/data                 --prefix=/usr/local                 --disable-static                 --enable-shared &&     make -j$(nproc) CFLAGS="-O2 -fPIC -mfpmath=sse -msse2 -DUSE_SSE" &&     make install && ldconfig
+#23 5.347 libtoolize: putting auxiliary files in '.'.
+#23 5.347 libtoolize: copying file './ltmain.sh'
+#23 5.814 libtoolize: putting macros in AC_CONFIG_MACRO_DIRS, 'm4'.
+#23 5.814 libtoolize: copying file 'm4/libtool.m4'
+#23 6.130 libtoolize: copying file 'm4/ltoptions.m4'
+#23 CANCELED
+
+#20 [linux/amd64 builder-arm64 5/5] RUN ./bootstrap.sh &&     ./configure --datadir=/usr/local/data                 --prefix=/usr/local                 --disable-static                 --enable-shared &&     make -j$(nproc) CFLAGS="-O2 -fPIC" &&     make install &&     ldconfig
+#20 5.303 libtoolize: putting auxiliary files in '.'.
+#20 5.303 libtoolize: copying file './ltmain.sh'
+#20 5.755 libtoolize: putting macros in AC_CONFIG_MACRO_DIRS, 'm4'.
+#20 5.755 libtoolize: copying file 'm4/libtool.m4'
+#20 6.094 libtoolize: copying file 'm4/ltoptions.m4'
+#20 CANCELED
+------
+ > [linux/arm64 builder-amd64 5/5] RUN ./bootstrap.sh &&     ./configure --datadir=/usr/local/data                 --prefix=/usr/local                 --disable-static                 --enable-shared &&     make -j$(nproc) CFLAGS="-O2 -fPIC -mfpmath=sse -msse2 -DUSE_SSE" &&     make install && ldconfig:
+6.360 libtool: compile:  gcc -DHAVE_CONFIG_H -I.. -I/usr/local/include -Wall -Wextra -Wno-unused-function -Wformat -Werror=format-security -Winit-self -Wno-sign-compare -DLIBPOSTAL_DATA_DIR=\"/usr/local/data/libpostal\" -g -mfpmath=sse -msse2 -DUSE_SSE -g -O2 -O2 -O2 -fPIC -mfpmath=sse -msse2 -DUSE_SSE -MT libpostal_la-address_dictionary.lo -MD -MP -MF .deps/libpostal_la-address_dictionary.Tpo -c address_dictionary.c  -fPIC -DPIC -o .libs/libpostal_la-address_dictionary.o
+6.365 gcc: error: unrecognized command-line option '-mfpmath=sse'
+6.365 gcc: error: unrecognized command-line option '-msse2'
+6.370 gcc: error: unrecognized command-line option '-mfpmath=sse'
+6.370 gcc: error: unrecognized command-line option '-msse2'
+6.384 make[2]: Leaving directory '/usr/local/src/libpostal/src'
+6.384 make[1]: Leaving directory '/usr/local/src/libpostal'
+6.384 make[2]: *** [Makefile:1374: libpostal_la-address_dictionary.lo] Error 1
+6.384 make[1]: *** [Makefile:456: all-recursive] Error 1
+6.384 make: *** [Makefile:365: all] Error 2
+------
+------
+ > [linux/arm64 builder-arm64 5/5] RUN ./bootstrap.sh &&     ./configure --datadir=/usr/local/data                 --prefix=/usr/local                 --disable-static                 --enable-shared &&     make -j$(nproc) CFLAGS="-O2 -fPIC" &&     make install &&     ldconfig:
+6.353 gcc: error: unrecognized command-line option '-mfpmath=sse'
+6.354 gcc: error: unrecognized command-line option '-msse2'
+6.354 make[2]: *** [Makefile:1367: libpostal_la-libpostal.lo] Error 1
+6.359 gcc: error: unrecognized command-line option '-mfpmath=sse'
+6.359 gcc: error: unrecognized command-line option '-msse2'
+6.360 make[2]: Leaving directory '/usr/local/src/libpostal/src'
+6.360 make[2]: *** [Makefile:1374: libpostal_la-address_dictionary.lo] Error 1
+6.360 make[1]: Leaving directory '/usr/local/src/libpostal'
+6.360 make[1]: *** [Makefile:456: all-recursive] Error 1
+6.360 make: *** [Makefile:365: all] Error 2
+------
+WARNING: No output specified with docker-container driver. Build result will only remain in the build cache. To push result image into registry use --push or to load image into docker use --load
+
+ [33m4 warnings found (use docker --debug to expand):
+[0m - FromAsCasing: 'as' and 'FROM' keywords' casing do not match (line 2)
+ - FromAsCasing: 'as' and 'FROM' keywords' casing do not match (line 23)
+ - FromAsCasing: 'as' and 'FROM' keywords' casing do not match (line 38)
+ - FromAsCasing: 'as' and 'FROM' keywords' casing do not match (line 54)
+Dockerfile:29
+--------------------
+  28 |     # Build with SSE flags *explicitly* for amd64
+  29 | >>> RUN ./bootstrap.sh && \
+  30 | >>>     ./configure --datadir=/usr/local/data \
+  31 | >>>                 --prefix=/usr/local \
+  32 | >>>                 --disable-static \
+  33 | >>>                 --enable-shared && \
+  34 | >>>     make -j$(nproc) CFLAGS="-O2 -fPIC -mfpmath=sse -msse2 -DUSE_SSE" && \
+  35 | >>>     make install && ldconfig
+  36 |     
+--------------------
+ERROR: failed to solve: process "/bin/sh -c ./bootstrap.sh &&     ./configure --datadir=/usr/local/data                 --prefix=/usr/local                 --disable-static                 --enable-shared &&     make -j$(nproc) CFLAGS=\"-O2 -fPIC -mfpmath=sse -msse2 -DUSE_SSE\" &&     make install && ldconfig" did not complete successfully: exit code: 2
+
+View build details: docker-desktop://dashboard/build/mybuilder/mybuilder0/1uf30mlo1d8s0scvx5u7mskvx
