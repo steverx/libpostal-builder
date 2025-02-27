@@ -1,4 +1,8 @@
 #!/bin/bash
+set -e
 
-# Switch to non-root user
-exec su-exec libpostaluser "$@"
+# Print debug info
+echo "Starting with user: $(whoami)"
+
+# Run the command
+exec "$@"

@@ -1,0 +1,94 @@
+# Dockerfile.arm64
+FROM python:3.9-slim as builder
+
+# Install build dependencies
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        gcc g++ make python3-dev curl git ca-certificates \
+        autoconf automake libtool pkg-config build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set working directory
+WORKDIR /usr/local/src
+
+# Clone libpostal repository
+RUN git clone https://github.com/openvenues/libpostal
+
+WORKDIR /usr/local/src/libpostal
+
+RUN git checkout tags/v1.0.0
+
+# Disable SSE in scanner.c
+RUN sed -i 's/#ifdef USE_SSE/#if 0 \/* SSE disabled for ARM compatibility *\//' src/scanner.c
+
+# Create a simple build step without optimizations for ARM64
+RUN ./bootstrap.sh && \
+    # Use very basic build options to prevent SSE usage
+    ./configure --datadir=/usr/local/data \
+                --prefix=/usr/local \
+                --disable-static \
+                --enable-shared \
+                --disable-data-download \
+                CFLAGS="-O2 -fPIC" && \
+    # Use a single-core build to reduce memory usage
+    make CFLAGS="-O2 -fPIC" && \
+    make install && \
+    ldconfig
+
+# --- Final Stage: Combine Artifacts ---
+FROM python:3.9-slim
+
+# Install runtime dependencies first and create directories
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        nginx \
+        ca-certificates \
+        curl \
+        gosu \
+    && rm -rf /var/lib/apt/lists/* && \
+    # Create user and directories
+    useradd -m -d /home/libpostaluser -s /bin/bash libpostaluser && \
+    mkdir -p /usr/local/data/libpostal && \
+    chown -R libpostaluser:libpostaluser /usr/local/data/libpostal
+
+# Copy from builder with root ownership
+COPY --from=builder /usr/local/lib/ /usr/local/lib/
+COPY --from=builder /usr/local/include/ /usr/local/include/
+COPY --from=builder /usr/local/share/ /usr/local/share/
+COPY --from=builder /usr/local/data/ /usr/local/data/
+
+# Execute ldconfig to update the dynamic linker cache
+RUN ldconfig
+
+# Switch to libpostaluser for downloading data files
+USER libpostaluser
+
+# Download specific model files
+RUN curl -L -o /usr/local/data/libpostal/address_expansions.dat https://raw.githubusercontent.com/openvenues/libpostal/v1.0.0/data/address_expansions.dat && \
+    curl -L -o /usr/local/data/libpostal/language_classifier.dat https://raw.githubusercontent.com/openvenues/libpostal/v1.0.0/data/language_classifier.dat && \
+    curl -L -o /usr/local/data/libpostal/language_classifier_keys.dat https://raw.githubusercontent.com/openvenues/libpostal/v1.0.0/data/language_classifier_keys.dat && \
+    curl -L -o /usr/local/data/libpostal/near_dupe_hashes_tfrecords.dat https://raw.githubusercontent.com/openvenues/libpostal/v1.0.0/data/near_dupe_hashes_tfrecords.dat && \
+    curl -L -o /usr/local/data/libpostal/numex_trie.dat https://raw.githubusercontent.com/openvenues/libpostal/v1.0.0/data/numex_trie.dat && \
+    curl -L -o /usr/local/data/libpostal/osm_ids.dat https://raw.githubusercontent.com/openvenues/libpostal/v1.0.0/data/osm_ids.dat && \
+    curl -L -o /usr/local/data/libpostal/parser_tf_models.dat https://raw.githubusercontent.com/openvenues/libpostal/v1.0.0/data/parser_tf_models.dat && \
+    curl -L -o /usr/local/data/libpostal/parser_trie.dat https://raw.githubusercontent.com/openvenues/libpostal/v1.0.0/data/parser_trie.dat && \
+    curl -L -o /usr/local/data/libpostal/transliteration_trie.dat https://raw.githubusercontent.com/openvenues/libpostal/v1.0.0/data/transliteration_trie.dat
+
+# Switch back to root for nginx config
+USER root
+
+# Configure nginx
+COPY nginx.conf /etc/nginx/nginx.conf
+RUN mkdir -p /usr/share/nginx/html && \
+    chown -R www-data:www-data /usr/share/nginx/html
+
+# Set up entrypoint
+COPY entrypoint.sh /
+RUN chmod +x /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
+
+HEALTHCHECK CMD curl --fail http://localhost/ || exit 1
