@@ -27,25 +27,48 @@ RUN git clone https://github.com/openvenues/libpostal
 WORKDIR /usr/local/src/libpostal
 RUN git checkout tags/v1.0.0
 
-# --- Use TARGETPLATFORM for conditional compilation ---
-ARG TARGETPLATFORM
-
-# Build libpostal (Conditional CFLAGS, passed to configure)
-RUN ./bootstrap.sh && \
-    if [ "$TARGETPLATFORM" = "linux/amd64" ]; then \
-        export CFLAGS="-O2 -fPIC -mfpmath=sse -msse2 -DUSE_SSE"; \
-    else \
-        export CFLAGS="-O2 -fPIC"; \
-        # Patch scanner.c to disable SSE for ARM compatibility
-        sed -i 's/#ifdef USE_SSE/#if 0 \/* Disabled SSE for ARM compatibility *\//' src/scanner.c; \
-    fi && \
-    ./configure --datadir=/usr/local/data \
-                --prefix=/usr/local \
-                --disable-static \
-                --enable-shared && \
-    make -j$(nproc) && \
-    make install && \
-    ldconfig
+# Create a comprehensive patch to disable all SSE code
+RUN echo '#!/bin/bash\n\
+# Patch scanner.c to completely disable SSE\n\
+sed -i "s/#ifdef USE_SSE/#if 0 \/* Disabled SSE for cross-platform compatibility *\//g" src/scanner.c\n\
+\n\
+# Create a wrapper for gcc to filter out SSE flags\n\
+cat > /tmp/gcc-wrapper << "EOF"\n\
+#!/bin/sh\n\
+filtered_args=$(echo "$@" | sed "s/-mfpmath=sse//g; s/-msse[0-9]*//g; s/-DUSE_SSE//g")\n\
+exec gcc $filtered_args\n\
+EOF\n\
+chmod +x /tmp/gcc-wrapper\n\
+cp /tmp/gcc-wrapper /tmp/g++\n\
+export PATH="/tmp:$PATH"\n\
+\n\
+# Run the actual build with safe flags\n\
+./bootstrap.sh\n\
+\n\
+# Find and patch configure scripts to remove SSE flags\n\
+find . -name "configure" -o -name "*.ac" -o -name "*.am" -o -name "*.in" | xargs sed -i "s/-mfpmath=sse//g; s/-msse[0-9]*//g; s/-DUSE_SSE//g"\n\
+\n\
+# Configure with safe options\n\
+./configure --datadir=/usr/local/data \\\n\
+            --prefix=/usr/local \\\n\
+            --disable-static \\\n\
+            --enable-shared \\\n\
+            CFLAGS="-O2 -fPIC" \\\n\
+            CPPFLAGS="-O2 -fPIC" \\\n\
+            CXXFLAGS="-O2 -fPIC"\n\
+\n\
+# Patch all Makefiles after configure\n\
+find . -name "Makefile" | xargs sed -i "s/-mfpmath=sse//g; s/-msse[0-9]*//g; s/-DUSE_SSE//g"\n\
+\n\
+# Build with safe flags\n\
+make -j$(nproc) CFLAGS="-O2 -fPIC" CPPFLAGS="-O2 -fPIC" CXXFLAGS="-O2 -fPIC"\n\
+\n\
+# Install\n\
+make install\n\
+ldconfig\n\
+' > /tmp/build-script.sh && \
+    chmod +x /tmp/build-script.sh && \
+    /tmp/build-script.sh
 
 # Download specific model files in builder stage
 RUN mkdir -p /usr/local/data/libpostal && \
@@ -59,7 +82,7 @@ RUN mkdir -p /usr/local/data/libpostal && \
     curl -L -o /usr/local/data/libpostal/parser_trie.dat https://raw.githubusercontent.com/openvenues/libpostal/v1.0.0/data/parser_trie.dat && \
     curl -L -o /usr/local/data/libpostal/transliteration_trie.dat https://raw.githubusercontent.com/openvenues/libpostal/v1.0.0/data/transliteration_trie.dat
 
-# --- Final Stage ---
+# Final stage
 FROM python:3.9-slim
 
 # Copy from builder
